@@ -107,6 +107,9 @@ Crosspixel.init = function (params) {
 			this.getKeyDownEventProvider(),
 			this.OpacityChanger.params.shouldStepUpOpacity,
 			function () {
+				if ( !Crosspixel.Image.showing )
+					Crosspixel.Image.toggleVisibility();
+
 				self.OpacityChanger.stepUpOpacity();
 			}
 		);
@@ -115,6 +118,9 @@ Crosspixel.init = function (params) {
 			this.getKeyDownEventProvider(),
 			this.OpacityChanger.params.shouldStepDownOpacity,
 			function () {
+				if ( !Crosspixel.Image.showing )
+					Crosspixel.Image.toggleVisibility();
+
 				self.OpacityChanger.stepDownOpacity();
 			}
 		);

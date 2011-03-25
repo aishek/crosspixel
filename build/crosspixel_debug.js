@@ -30,15 +30,33 @@ Crosspixel.Utils = {
 	 * @return {Object} объект из ключей и значений по-умолчанию и новых значений
 	 */
 	createParams: function (defaults, params) {
-		var result = {};
-
-		for ( var key in defaults )
-			result[key] = defaults[key];
-
-		for ( var key in params )
-			result[key] = params[key];
+		result = defaults;
+		Crosspixel.Utils.mergeParams(defaults || {}, params);
 
 		return result;
+	},
+
+	/**
+	 * Сливает два объекта
+	 * @private
+	 * @param {Object} result
+	 * @param {Object} params
+	 */
+	mergeParams: function(result, params) {
+		for ( var key in params ) {
+			if ( params.hasOwnProperty(key) ) {
+				if ( result[key] && Crosspixel.Utils.isObject(result[key]) ) {
+					Crosspixel.Utils.mergeParams(result[key], params[key]);
+				}
+				else {
+					result[key] = params[key];
+				}
+			}
+		}
+	},
+
+	isObject: function(o) {
+  		return Object.prototype.toString.call(o) === '[object Object]';
 	},
 
 	defaultStyleValueParams: {
@@ -241,43 +259,7 @@ Crosspixel.Utils.StateChanger = function (eventProvider, shouldChange, stateChan
 };
 /** @include "../index.js" */
 
-Crosspixel.OpacityChanger = {};/** @include "index.js" */
-
-Crosspixel.OpacityChanger.defaults = {
-	/**
-	 * Функция вызывается каждый раз при нажатии клавиш в браузере.
-	 * @param {Object} params информация о нажатой комбинации клавиш (params.ctrlKey, params.altKey, params.keyCode)
-	 * @return {Boolean} true, если нужно сделать изображение менее прозрачным на opacityStep процентов
-	 */
-	shouldStepUpOpacity:
-		function (params) {
-			// Ctrl o
-			var result = !params.occured_in_form && (params.ctrlKey && (params.character == 'o' || params.character == 'O' || params.character == 'щ' || params.character == 'Щ'));
-			return result;
-		},
-	/**
-	 * Функция вызывается каждый раз при нажатии клавиш в браузере.
-	 * @param {Object} params информация о нажатой комбинации клавиш (params.ctrlKey, params.altKey, params.keyCode)
-	 * @return {Boolean} true, если нужно сделать изображение более прозрачным на opacityStep процентов
-	 */
-	shouldStepDownOpacity:
-		function (params) {
-			// Ctrl u
-			var result = !params.occured_in_form && (params.ctrlKey && (params.character == 'u' || params.character == 'U' || params.character == 'г' || params.character == 'Г'));
-			return result;
-		},
-
-	/**
-	 * Начальное значение прозрачности изображения от 0 до 1 (0 - абсолютно прозрачное, 1 - абсолютно непрозрачное)
-	 * @type Number
-	 */
-	opacity: 0.25,
-	/**
-	 * Шаг изменения значения прозрачности для изображения от 0 до 1
-	 * @type Number
-	 */
-	opacityStep: 0.05
-};Crosspixel.OpacityChanger = {
+Crosspixel.OpacityChanger = {};Crosspixel.OpacityChanger = {
 
 	params: null,
 
@@ -321,70 +303,45 @@ Crosspixel.OpacityChanger.defaults = {
 		if (element)
 			element.style.opacity = this.params.opacity;
 	}
-};/** @include "../index.js" */
+};/** @include "index.js" */
 
-Crosspixel.Image = {};/** @include "index.js" */
-
-Crosspixel.Image.defaults = {
+Crosspixel.OpacityChanger.defaults = {
 	/**
 	 * Функция вызывается каждый раз при нажатии клавиш в браузере.
 	 * @param {Object} params информация о нажатой комбинации клавиш (params.ctrlKey, params.altKey, params.keyCode)
-	 * @return {Boolean} true, если нужно показать/скрыть изображение
+	 * @return {Boolean} true, если нужно сделать изображение менее прозрачным на opacityStep процентов
 	 */
-	shouldToggleVisibility:
+	shouldStepUpOpacity:
 		function (params) {
-			// Ctrl i
-			var result = !params.occured_in_form && (params.ctrlKey && (params.character == 'i' || params.character == 'I' || params.character == 'ш' || params.character == 'Ш'));
+			// Ctrl o
+			var result = !params.occured_in_form && (params.ctrlKey && (params.character == 'o' || params.character == 'O' || params.character == 'щ' || params.character == 'Щ'));
+			return result;
+		},
+	/**
+	 * Функция вызывается каждый раз при нажатии клавиш в браузере.
+	 * @param {Object} params информация о нажатой комбинации клавиш (params.ctrlKey, params.altKey, params.keyCode)
+	 * @return {Boolean} true, если нужно сделать изображение более прозрачным на opacityStep процентов
+	 */
+	shouldStepDownOpacity:
+		function (params) {
+			// Ctrl u
+			var result = !params.occured_in_form && (params.ctrlKey && (params.character == 'u' || params.character == 'U' || params.character == 'г' || params.character == 'Г'));
 			return result;
 		},
 
 	/**
-	 * Значения CSS-свойства z-index HTML-контейнера изображения
+	 * Начальное значение прозрачности изображения от 0 до 1 (0 - абсолютно прозрачное, 1 - абсолютно непрозрачное)
 	 * @type Number
 	 */
-	'z-index': 255,
+	opacity: 0.25,
+	/**
+	 * Шаг изменения значения прозрачности для изображения от 0 до 1
+	 * @type Number
+	 */
+	opacityStep: 0.05
+};/** @include "../index.js" */
 
-	/**
-	 * Центрировать ли изображение относительно рабочей области браузера
-	 * @type Boolean
-	 */
-	centered: false,
-
-	/**
-	 * Отступ от верхнего края рабочей области браузера до изображения в пикселах
-	 * @type Number
-	 */
-	marginTop: 0,
-	/**
-	 * Отступ от левого края рабочей области браузера до изображения.
-	 * Возможные значения аналогичны значениям CSS-свойства margin-left
-	 * @type Number
-	 */
-	marginLeft: '0px',
-	/**
-	 * Отступ от правого края рабочей области браузера до изображения.
-	 * Возможные значения аналогичны значениям CSS-свойства margin-left
-	 * @type Number
-	 */
-	marginRight: '0px',
-
-	/**
-	 * URL файла изображения
-	 * @type String
-	 */
-	src: '',
-
-	/**
-	 * Ширина изображения в пикселах
-	 * @type Number
-	 */
-	width: 100,
-	/**
-	 * Высота изображения в пикселах
-	 * @type Number
-	 */
-	height: 100
-};/** @include "namespace.js" */
+Crosspixel.Image = {};/** @include "namespace.js" */
 Crosspixel.Image = {
 
 	showing: false,
@@ -452,13 +409,17 @@ Crosspixel.Image = {
 	 */
 	createImageDOM: function(params) {
 		var imageStyle = {
+			position: 'static',
+
 			width : 'auto',
 			height : 'auto',
 
 			opacity : Crosspixel.OpacityChanger.params.opacity
 		};
 		var imageContainerStyle = {
-			'padding-top' : params.marginTop + 'px',
+			position: 'static',
+
+			'padding-top' : params['margin-top'],
 
 			width : 'auto',
 			height : 'auto'
@@ -468,7 +429,7 @@ Crosspixel.Image = {
 			imageContainerStyle['text-align'] = 'center';
 			imageStyle.margin = '0 auto';
 		} else {
-			imageContainerStyle['padding-left'] = params.marginLeft, imageContainerStyle['padding-right'] = params.marginRight;
+			imageContainerStyle['padding-left'] = params['margin-left'], imageContainerStyle['padding-right'] = params['margin-right'];
 		};
 
 		var imageDOMParent = document.createElement('div');
@@ -503,6 +464,67 @@ Crosspixel.Image = {
 		if (this.parentElement)
 			this.parentElement.style.display = (this.showing ? 'block' : 'none');
 	}
+};/** @include "index.js" */
+
+Crosspixel.Image.defaults = {
+	/**
+	 * Функция вызывается каждый раз при нажатии клавиш в браузере.
+	 * @param {Object} params информация о нажатой комбинации клавиш (params.ctrlKey, params.altKey, params.keyCode)
+	 * @return {Boolean} true, если нужно показать/скрыть изображение
+	 */
+	shouldToggleVisibility:
+		function (params) {
+			// Ctrl i
+			var result = !params.occured_in_form && (params.ctrlKey && (params.character == 'i' || params.character == 'I' || params.character == 'ш' || params.character == 'Ш'));
+			return result;
+		},
+
+	/**
+	 * Значения CSS-свойства z-index HTML-контейнера изображения
+	 * @type Number
+	 */
+	'z-index': 255,
+
+	/**
+	 * Центрировать ли изображение относительно рабочей области браузера
+	 * @type Boolean
+	 */
+	centered: false,
+
+	/**
+	 * Отступ от верхнего края рабочей области браузера до изображения в пикселах
+	 * @type Number
+	 */
+	'margin-top': 0,
+	/**
+	 * Отступ от левого края рабочей области браузера до изображения.
+	 * Возможные значения аналогичны значениям CSS-свойства margin-left
+	 * @type Number
+	 */
+	'margin-left': '0px',
+	/**
+	 * Отступ от правого края рабочей области браузера до изображения.
+	 * Возможные значения аналогичны значениям CSS-свойства margin-left
+	 * @type Number
+	 */
+	'margin-right': '0px',
+
+	/**
+	 * URL файла изображения
+	 * @type String
+	 */
+	src: '',
+
+	/**
+	 * Ширина изображения в пикселах
+	 * @type Number
+	 */
+	width: 100,
+	/**
+	 * Высота изображения в пикселах
+	 * @type Number
+	 */
+	height: 100
 };/** @include "../index.js" */
 Crosspixel.Resizer = {};/** @include "namespace.js" */
 Crosspixel.Resizer = {
@@ -907,6 +929,9 @@ Crosspixel.init = function (params) {
 			this.getKeyDownEventProvider(),
 			this.OpacityChanger.params.shouldStepUpOpacity,
 			function () {
+				if ( !Crosspixel.Image.showing )
+					Crosspixel.Image.toggleVisibility();
+
 				self.OpacityChanger.stepUpOpacity();
 			}
 		);
@@ -915,6 +940,9 @@ Crosspixel.init = function (params) {
 			this.getKeyDownEventProvider(),
 			this.OpacityChanger.params.shouldStepDownOpacity,
 			function () {
+				if ( !Crosspixel.Image.showing )
+					Crosspixel.Image.toggleVisibility();
+
 				self.OpacityChanger.stepDownOpacity();
 			}
 		);
@@ -963,102 +991,26 @@ Crosspixel.init = function (params) {
 	}
 };/** @include "index.js" */
 
-/**
- * Настройки
- */
 Crosspixel.init(
 	{
 
 		image: {
-			/**
-			 * Функция вызывается каждый раз при нажатии клавиш в браузере.
-			 * @param {Object} params информация о нажатой комбинации клавиш (params.ctrlKey, params.altKey, params.keyCode)
-			 * @return {Boolean} true, если нужно показать/скрыть изображение
-			 */
-			shouldToggleVisibility:
-				function (params) {
-					// Ctrl i
-					var result = !params.occured_in_form && (params.ctrlKey && (params.character == 'i' || params.character == 'I' || params.character == 'ш' || params.character == 'Ш'));
-					return result;
-				},
-			/**
-			 * Значения CSS-свойства z-index HTML-контейнера изображения
-			 * @type Number
-			 */
 			'z-index': 255,
 
-			/**
-			 * Центрировать ли изображение относительно ширины рабочей области браузера
-			 * @type Boolean
-			 */
 			centered: true,
 
-			/**
-			 * Отступ от верхнего края рабочей области браузера до изображения в пикселах
-			 * @type Number
-			 */
-			marginTop: 100,
-			/**
-			 * Отступ от левого края рабочей области браузера до изображения.
-			 * Возможные значения аналогичны значениям CSS-свойства margin-left
-			 * @type Number
-			 */
-			marginLeft: '0px',
-			/**
-			 * Отступ от правого края рабочей области браузера до изображения.
-			 * Возможные значения аналогичны значениям CSS-свойства margin-left
-			 * @type Number
-			 */
-			marginRight: '0px',
+			'margin-top': '0px',
+			'margin-left': '0px',
+			'margin-right': '0px',
 
-			/**
-			 * URL файла изображения
-			 * @type String
-			 */
 			src: 'design.png',
 
-			/**
-			 * Ширина изображения в пикселах
-			 * @type Number
-			 */
 			width: 300,
-			/**
-			 * Высота изображения в пикселах
-			 * @type Number
-			 */
 			height: 356
 		},
 
 		opacity: {
-			/**
-			 * Функция вызывается каждый раз при нажатии клавиш в браузере.
-			 * @param {Object} params информация о нажатой комбинации клавиш (params.ctrlKey, params.altKey, params.keyCode)
-			 * @return {Boolean} true, если нужно сделать изображение менее прозрачным на opacityStep процентов
-			 */
-			shouldStepUpOpacity:
-				function (params) {
-					// Ctrl o
-					var result = !params.occured_in_form && (params.ctrlKey && (params.character == 'o' || params.character == 'O' || params.character == 'щ' || params.character == 'Щ'));
-					return result;
-				},
-			/**
-			 * Функция вызывается каждый раз при нажатии клавиш в браузере.
-			 * @param {Object} params информация о нажатой комбинации клавиш (params.ctrlKey, params.altKey, params.keyCode)
-			 * @return {Boolean} true, если нужно сделать изображение более прозрачным на opacityStep процентов
-			 */
-			shouldStepDownOpacity:
-				function (params) {
-					// Ctrl u
-					var result = !params.occured_in_form && (params.ctrlKey && (params.character == 'u' || params.character == 'U' || params.character == 'г' || params.character == 'Г'));
-					return result;
-				},
-
-
-			opacity: 0.25,
-			/**
-			 * Шаг изменения значения прозрачности для изображения от 0 до 1
-			 * @type Number
-			 */
+			opacity: 1,
 			opacityStep: 0.05
 		},
 
@@ -1067,38 +1019,15 @@ Crosspixel.init(
 				style: {
 					position: "absolute",
 					right: '10px',
-					top: '10px',
-					'z-index': 1000
-				},
-
-				label: "Настройки"
+					top: '10px'
+				}
 			},
 
 			pane: {
 				style: {
 					position: "absolute",
 					right: '10px',
-					top: '35px',
-
-					width: 'auto',
-					height: 'auto',
-
-					margin: '0',
-					padding: '7px 5px',
-
-					background: '#FFF',
-					border: '2px solid #CCC',
-
-					'z-index': 1000
-				},
-
-				labels: {
-					image: 'изображение-макет <span style="color:#555;font-size:80%;margin-left:0.75em">Ctrl i</span>',
-					opacity: {
-						label: '<span style="margin-left:3.7em">прозрачность</span>',
-						less: '<span style="color:#555;font-size:80%;margin:0 0.75em 0 1em">Ctrl u</span> ',
-						more: ' <span style="color:#555;font-size:80%;margin-left:0.75em">Ctrl o</span>'
-					}
+					top: '35px'
 				}
 			}
 		}

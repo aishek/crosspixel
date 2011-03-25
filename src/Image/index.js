@@ -66,13 +66,17 @@ Crosspixel.Image = {
 	 */
 	createImageDOM: function(params) {
 		var imageStyle = {
+			position: 'static',
+
 			width : 'auto',
 			height : 'auto',
 
 			opacity : Crosspixel.OpacityChanger.params.opacity
 		};
 		var imageContainerStyle = {
-			'padding-top' : params.marginTop + 'px',
+			position: 'static',
+
+			'padding-top' : params['margin-top'],
 
 			width : 'auto',
 			height : 'auto'
@@ -82,7 +86,7 @@ Crosspixel.Image = {
 			imageContainerStyle['text-align'] = 'center';
 			imageStyle.margin = '0 auto';
 		} else {
-			imageContainerStyle['padding-left'] = params.marginLeft, imageContainerStyle['padding-right'] = params.marginRight;
+			imageContainerStyle['padding-left'] = params['margin-left'], imageContainerStyle['padding-right'] = params['margin-right'];
 		};
 
 		var imageDOMParent = document.createElement('div');

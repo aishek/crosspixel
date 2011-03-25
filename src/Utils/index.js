@@ -28,15 +28,33 @@ Crosspixel.Utils = {
 	 * @return {Object} объект из ключей и значений по-умолчанию и новых значений
 	 */
 	createParams: function (defaults, params) {
-		var result = {};
-
-		for ( var key in defaults )
-			result[key] = defaults[key];
-
-		for ( var key in params )
-			result[key] = params[key];
+		result = defaults;
+		Crosspixel.Utils.mergeParams(defaults || {}, params);
 
 		return result;
+	},
+
+	/**
+	 * Сливает два объекта
+	 * @private
+	 * @param {Object} result
+	 * @param {Object} params
+	 */
+	mergeParams: function(result, params) {
+		for ( var key in params ) {
+			if ( params.hasOwnProperty(key) ) {
+				if ( result[key] && Crosspixel.Utils.isObject(result[key]) ) {
+					Crosspixel.Utils.mergeParams(result[key], params[key]);
+				}
+				else {
+					result[key] = params[key];
+				}
+			}
+		}
+	},
+
+	isObject: function(o) {
+  		return Object.prototype.toString.call(o) === '[object Object]';
 	},
 
 	defaultStyleValueParams: {
