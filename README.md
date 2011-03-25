@@ -6,7 +6,7 @@ CrossPixel — небольшая программа на Javascript (около
 ## Как начать пользоваться
 
 1. Скачайте [Crosspixel 1.0](http://github.com/downloads/aishek/crosspixel/crosspixel-1.0.zip) и сохраните файл crosspixel/build/crosspixel.js в директорию с вашим HTML-файлом
-2. В конец HTML-файла, перед </body> вставьте <script type="text/javascript" src="crosspixel.js"></script>
+2. В конец HTML-файла, перед `</body>` вставьте `<script type="text/javascript" src="crosspixel.js"></script>`
 3. Откройте crosspixel.js и измените путь к файлу изображения макета, его размеры, позицию на странице
 4. Используйте контролы на панели в правом верхнем углу страницы для управления изображением
 
