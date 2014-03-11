@@ -1,2 +1,0 @@
-/** @namespace */
-var Crosspixel = {};
