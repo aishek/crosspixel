@@ -18,11 +18,11 @@ function set_icon(icon) {
 function update_icon(tab_id) {
   if (crosspixel_is_enabled_for(tab_id)) {
     set_icon('enabled');
-    set_title('Disable crosspixel');
+    set_title(chrome.i18n.getMessage("disable"));
   }
   else {
     set_icon('disabled');
-    set_title('Enable crosspixel');
+    set_title(chrome.i18n.getMessage("enable"));
   }
 }
 

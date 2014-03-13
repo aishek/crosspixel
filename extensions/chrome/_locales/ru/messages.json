@@ -1,0 +1,14 @@
+{
+  "extension_description": {
+    "message": "Позволяет накладывать изображение макет поверх страницы для вёрстки пиксель-в-пиксель."
+  },
+  "toggle": {
+    "message": "Включить/Выключить Crosspixel"
+  },
+  "enable": {
+    "message": "Включить Crosspixel"
+  },
+  "disable": {
+    "message": "Выключить Crosspixel"
+  }
+}

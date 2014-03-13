@@ -1,0 +1,14 @@
+{
+  "extension_description": {
+    "message": "Allows to place image above page for creating pixel-perfect HTML markup."
+  },
+  "toggle": {
+    "message": "Toggle crosspixel"
+  },
+  "enable": {
+    "message": "Enable Crosspixel"
+  },
+  "disable": {
+    "message": "Disable Crosspixel"
+  }
+}
